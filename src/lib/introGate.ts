@@ -35,3 +35,18 @@ export function signalIntroDone(): void {
   done = true;
   window.dispatchEvent(new CustomEvent(INTRO_DONE_EVENT));
 }
+
+/** Fired when the intro's crane reaches its perch — the page-side crane mounts here. */
+export const CRANE_LAND_EVENT = 'yoriai:crane-land';
+
+let landed = false;
+
+export function craneLanded(): boolean {
+  return landed;
+}
+
+export function signalCraneLand(): void {
+  if (landed) return;
+  landed = true;
+  window.dispatchEvent(new CustomEvent(CRANE_LAND_EVENT));
+}

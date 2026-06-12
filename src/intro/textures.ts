@@ -65,3 +65,52 @@ export function vigTex(label: string, kanji: string, bg: string, glow: string): 
   g.strokeRect(4, 4, 504, 332);
   return new THREE.CanvasTexture(c);
 }
+
+/** Tiny soft-edged white square — a drifting paper fragment. */
+export function paperTex(): THREE.CanvasTexture {
+  const c = document.createElement('canvas');
+  c.width = c.height = 32;
+  const g = c.getContext('2d')!;
+  g.translate(16, 16);
+  g.rotate(0.4);
+  const gr = g.createRadialGradient(0, 0, 2, 0, 0, 15);
+  gr.addColorStop(0, 'rgba(252,248,240,.95)');
+  gr.addColorStop(0.75, 'rgba(248,242,232,.75)');
+  gr.addColorStop(1, 'rgba(248,242,232,0)');
+  g.fillStyle = gr;
+  g.fillRect(-10, -10, 20, 20);
+  return new THREE.CanvasTexture(c);
+}
+
+/** Translucent rounded "glass" UI card with placeholder content bars. */
+export function panelTex(): THREE.CanvasTexture {
+  const c = document.createElement('canvas');
+  c.width = 384;
+  c.height = 256;
+  const g = c.getContext('2d')!;
+  const r = 26;
+  g.beginPath();
+  g.roundRect(6, 6, 372, 244, r);
+  g.fillStyle = 'rgba(255,255,255,.10)';
+  g.fill();
+  g.strokeStyle = 'rgba(255,255,255,.55)';
+  g.lineWidth = 2.5;
+  g.stroke();
+  // image area + text bars, like a ghost of an activity card
+  g.fillStyle = 'rgba(255,255,255,.14)';
+  g.beginPath();
+  g.roundRect(26, 26, 332, 110, 14);
+  g.fill();
+  g.fillStyle = 'rgba(255,255,255,.34)';
+  g.beginPath();
+  g.roundRect(26, 156, 220, 16, 8);
+  g.fill();
+  g.fillStyle = 'rgba(255,255,255,.20)';
+  g.beginPath();
+  g.roundRect(26, 186, 290, 11, 5.5);
+  g.fill();
+  g.beginPath();
+  g.roundRect(26, 208, 160, 11, 5.5);
+  g.fill();
+  return new THREE.CanvasTexture(c);
+}

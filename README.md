@@ -31,19 +31,35 @@ lives in `src/site.ts`; the activity dataset and card renderer in
 ## Cinematic intro
 
 `src/intro/intro.ts` runs once per session on the homepage (force it with
-`/#intro`): particles assemble the brand mark, the Blender torii solidifies
-inside it, lanterns and sakura rise, the camera passes through the gate past
-vignettes of local life, and the final bloom dissolves into the site's washi
-background — the page settles in underneath, no hard cut. Skippable any time
-(button or Esc), honors `prefers-reduced-motion`, optional generative
-soundscape (`src/intro/audio.ts`).
+`/#intro`). The sequence — every transition carried by an origami crane, no
+hard cuts:
 
-## 3D model (Blender)
+1. a red torii in mist, lanterns and drifting sakura; the camera dollies in
+2. through the gate, dreamlike vignettes of local life pass by
+3. paper fragments and petals gather and fold into a white origami crane
+   (per-facet assembly of the Blender model in `src/intro/craneModel.ts`)
+4. the camera follows the crane forward
+5. the world transforms: lanterns become interface lights, streets become UI
+   grid lines, architecture dissolves into glass panels, the fog turns washi
+6. the scene's background dissolves to transparent and the real homepage
+   constructs itself behind the canvas — nav first, then the hero
+7. the crane circles once and lands on the hero perch
+8. the page-side crane (`src/intro/heroCrane.ts`) takes over in a crossfade
+   and stays as a living decoration with subtle idle motion
 
-`blender/torii_gate.py` builds the myōjin-style torii — curved kasagi with
-upswept ends, shimaki, gakuzuka, penetrating nuki, daiwa capitals, tapered
-inward-leaning pillars, stone bases — plus two kasuga lanterns with emissive
-fireboxes, and exports `public/models/torii.glb` (~180 KB). Regenerate with:
+Skippable any time (button or Esc), honors `prefers-reduced-motion`,
+optional generative soundscape (`src/intro/audio.ts`).
+
+## 3D models (Blender)
+
+- `blender/torii_gate.py` — myōjin-style torii (curved kasagi, shimaki,
+  gakuzuka, nuki, daiwa, leaning pillars, stone bases) plus two kasuga
+  lanterns with emissive fireboxes → `public/models/torii.glb`
+- `blender/origami_crane.py` — faceted paper crane; wings are separate
+  objects with origins on their fold hinges so the runtime flaps them with a
+  plain rotation → `public/models/crane.glb`
+
+Regenerate with:
 
 ```bash
 pip install bpy

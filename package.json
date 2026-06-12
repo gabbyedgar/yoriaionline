@@ -9,7 +9,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "node tests/homepage.test.mjs return && node tests/homepage.test.mjs first",
-    "model": "python3 blender/torii_gate.py",
+    "model": "python3 blender/torii_gate.py && python3 blender/origami_crane.py",
     "icons": "python3 tools/make_favicons.py"
   },
   "dependencies": {

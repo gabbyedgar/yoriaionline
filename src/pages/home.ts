@@ -1,18 +1,36 @@
 import '../site';
 import { toriiSVG } from '../lib/torii';
-import { introPending, signalIntroDone } from '../lib/introGate';
+import { introPending, signalIntroDone, signalCraneLand, craneLanded, CRANE_LAND_EVENT } from '../lib/introGate';
 import { ACTIVITIES, activityCard } from '../data/activities';
 
 // ---- cinematic intro (loaded lazily; only on first visit per session) ----
-if (introPending()) {
+const cinematic = introPending();
+if (cinematic) {
   document.body.classList.add('intro-lock');
   import('../intro/intro')
     .then((m) => m.runIntro())
     .catch(() => {
       // chunk failed to load — release the page and let reveals run
       document.body.classList.remove('intro-lock');
+      signalCraneLand();
       signalIntroDone();
     });
+}
+
+// ---- the resident crane on the hero perch ----
+const perch = document.getElementById('cranePerch');
+if (perch) {
+  const mount = (entry: 'fly' | 'perch') =>
+    import('../intro/heroCrane')
+      .then((m) => m.mountHeroCrane(perch, entry))
+      .catch(() => {});
+  if (cinematic) {
+    // arrives when the intro's crane lands, for a seamless crossfade
+    if (craneLanded()) mount('perch');
+    else window.addEventListener(CRANE_LAND_EVENT, () => mount('perch'), { once: true });
+  } else {
+    mount('fly');
+  }
 }
 
 // ---- hero avatars ----
@@ -38,13 +56,19 @@ track.innerHTML = [...words, ...words]
   .join('');
 
 // ---- feed preview cards ----
+// Plain .acard with a self-running rise animation — never gated on the
+// scroll-reveal system, so the section can't be left blank.
 const feat = ['kuromon', 'nakanoshima', 'okonomiyaki', 'kissaten', 'yodogawa', 'sento'];
 const grid = document.getElementById('feedGrid')!;
+grid.innerHTML = '';
 feat.forEach((id, i) => {
   const a = ACTIVITIES.find((x) => x.id === id)!;
   const el = document.createElement('a');
   el.href = 'activity.html?id=' + a.id;
-  el.className = 'acard reveal d' + ((i % 3) + 1);
+  el.className = 'acard';
+  el.style.animation = `rise .6s ${0.05 + (i % 3) * 0.08}s var(--ease) both`;
+  // once risen, drop the animation so its fill mode can't override the hover tilt
+  el.addEventListener('animationend', () => (el.style.animation = ''), { once: true });
   el.innerHTML = activityCard(a);
   grid.appendChild(el);
 });
@@ -98,41 +122,10 @@ form.addEventListener('submit', (e) => {
   </div>`;
 });
 
-// ---- 3D: hero parallax tilt ----
+// ---- 3D: feed card tilt on hover ----
 const fineMotion =
   window.matchMedia('(prefers-reduced-motion: no-preference)').matches &&
   window.matchMedia('(pointer: fine)').matches;
-const stage = document.getElementById('heroStage');
-const art = document.getElementById('heroArt');
-if (fineMotion && stage && art) {
-  let tx = 0, ty = 0, cx = 0, cy = 0;
-  let raf: number | null = null;
-  const step = (): void => {
-    cx += (tx - cx) * 0.08;
-    cy += (ty - cy) * 0.08;
-    stage.style.transform = `rotateY(${(cx * 7).toFixed(2)}deg) rotateX(${(-cy * 5).toFixed(2)}deg)`;
-    if (Math.abs(tx - cx) > 0.001 || Math.abs(ty - cy) > 0.001) raf = requestAnimationFrame(step);
-    else raf = null;
-  };
-  const onMove = (e: MouseEvent): void => {
-    const r = art.getBoundingClientRect();
-    const nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-    const ny = ((e.clientY - r.top) / r.height) * 2 - 1;
-    tx = Math.max(-1, Math.min(1, nx));
-    ty = Math.max(-1, Math.min(1, ny));
-    if (!raf) raf = requestAnimationFrame(step);
-  };
-  const onLeave = (): void => {
-    tx = 0;
-    ty = 0;
-    if (!raf) raf = requestAnimationFrame(step);
-  };
-  const hero = document.querySelector<HTMLElement>('.hero')!;
-  hero.addEventListener('mousemove', onMove);
-  hero.addEventListener('mouseleave', onLeave);
-}
-
-// ---- 3D: feed card tilt on hover ----
 if (fineMotion) {
   grid.addEventListener('mousemove', (e) => {
     const card = (e.target as HTMLElement).closest<HTMLElement>('.acard');
