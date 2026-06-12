@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node tests/homepage.test.mjs return && node tests/homepage.test.mjs first",
+    "test": "node tests/homepage.test.mjs reduced && node tests/homepage.test.mjs cinematic",
     "model": "python3 blender/torii_gate.py && python3 blender/origami_crane.py",
     "icons": "python3 tools/make_favicons.py"
   },

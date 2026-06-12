@@ -161,6 +161,10 @@ section{ position:relative; }
   .nav-links, .nav-cta .btn-ghost{ display:none; }
   .nav-toggle{ display:inline-flex; }
 }
+@media (max-width:420px){
+  /* the menu sheet carries both CTAs — keep the bar to brand + toggle */
+  .nav-cta .btn-primary{ display:none; }
+}
 
 /* mobile sheet */
 .msheet{ position:fixed; inset:0; z-index:70; background:var(--bg); padding:24px var(--gut);

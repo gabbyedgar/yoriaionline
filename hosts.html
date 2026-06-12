@@ -133,7 +133,7 @@
 @keyframes floaty{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-9px);} }
 .host-art .fc-top{ display:flex; }
 @media (prefers-reduced-motion:reduce){ .host-art .float-card{ animation:none; } }
-@media (max-width:760px){ .host-art{ display:none; } }
+@media (max-width:760px){ .host-hero{ grid-template-columns:1fr; } .host-art{ display:none; } }
 
 .host-why{ display:flex; align-items:center; gap:clamp(24px,4vw,48px); }
 @media (max-width:680px){ .host-why{ flex-direction:column; align-items:flex-start; gap:18px; } }

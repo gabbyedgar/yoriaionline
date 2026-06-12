@@ -10,6 +10,22 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#FAF7F4">
+<style>
+  /* pre-paint cover: the cinematic owns the first frame — the page must never
+     flash before the intro overlay (z-index 9999) mounts above this */
+  html.intro-boot::before{ content:""; position:fixed; inset:0; background:#050403; z-index:9998; }
+</style>
+<script>
+  (function () {
+    try {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('intro-boot');
+        // last-resort: never leave the page covered if the scripts fail to load
+        setTimeout(function () { document.documentElement.classList.remove('intro-boot'); }, 9000);
+      }
+    } catch (e) { /* no matchMedia — skip the cinematic, show the page */ }
+  })();
+</script>
 </head>
 <body>
 
@@ -192,6 +208,13 @@
 
 /* ---- hero ---- */
 .hero-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(32px,5vw,72px); align-items:center; }
+@media (max-width:900px){
+  .hero-grid{ grid-template-columns:1fr; gap:36px; }
+  .hero-art{ height:340px; min-height:300px; max-width:480px; margin-inline:auto; width:100%; }
+}
+@media (max-width:560px){
+  .hero-art{ height:260px; min-height:220px; }
+}
 .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-top:34px; }
 .hero-meta{ display:flex; align-items:center; gap:16px; margin-top:30px; flex-wrap:wrap; }
 .av-row{ display:flex; }
@@ -272,7 +295,6 @@
 .wl-note{ text-align:center; font-size:11.5px; margin:2px 0 0; }
 .wl-success{ text-align:center; padding:20px 0; }
 @media (max-width:760px){ .waitlist-card{ grid-template-columns:1fr; } .wl-form{ border-left:0; border-top:1px solid var(--border); } }
-@media (max-width:560px){ .hero-art{ display:none; } }
 </style>
 </body>
 </html>

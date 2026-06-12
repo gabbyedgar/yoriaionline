@@ -1,24 +1,23 @@
 /* Shared gating for the cinematic intro — used by both the site chrome
    (to hold reveal animations until the intro hands over) and the homepage
    (to decide whether to load the intro chunk at all).
-   sessionStorage can throw in sandboxed/private contexts; treat that as "no intro". */
+
+   The cinematic plays on EVERY load of the homepage (by design — a reload
+   takes you back through the gateway). Only prefers-reduced-motion opts out. */
 
 export function introPending(): boolean {
   try {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-    const seen = sessionStorage.getItem('yoriai_intro_done');
-    return !seen || location.hash === '#intro';
+    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   } catch {
     return false;
   }
 }
 
-export function markIntroDone(): void {
-  try {
-    sessionStorage.setItem('yoriai_intro_done', '1');
-  } catch {
-    /* storage unavailable — intro will simply replay next visit */
-  }
+/* index.html sets html.intro-boot before first paint so the page can never
+   flash before the overlay mounts. Every path that takes over the screen
+   (or bails) must lift it. */
+export function clearIntroBoot(): void {
+  document.documentElement.classList.remove('intro-boot');
 }
 
 /** Fired when the intro finishes, is skipped, or bails — reveals start here. */
@@ -33,6 +32,7 @@ export function introHandedOver(): boolean {
 
 export function signalIntroDone(): void {
   done = true;
+  clearIntroBoot();
   window.dispatchEvent(new CustomEvent(INTRO_DONE_EVENT));
 }
 

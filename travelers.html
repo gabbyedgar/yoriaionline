@@ -117,7 +117,7 @@
 @keyframes floaty{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-9px);} }
 .trav-art .fc-top{ display:flex; }
 @media (prefers-reduced-motion:reduce){ .trav-art .float-card{ animation:none; } }
-@media (max-width:760px){ .trav-art{ display:none; } }
+@media (max-width:760px){ .trav-hero{ grid-template-columns:1fr; } .trav-art{ display:none; } }
 
 .trav-why{ display:flex; align-items:center; gap:clamp(24px,4vw,48px); }
 @media (max-width:680px){ .trav-why{ flex-direction:column; align-items:flex-start; gap:18px; } }

@@ -30,9 +30,11 @@ lives in `src/site.ts`; the activity dataset and card renderer in
 
 ## Cinematic intro
 
-`src/intro/intro.ts` runs once per session on the homepage (force it with
-`/#intro`). The sequence — every transition carried by an origami crane, no
-hard cuts:
+`src/intro/intro.ts` plays on every load of the homepage (a reload takes you
+back through the gateway); only `prefers-reduced-motion` opts out. An inline
+pre-paint cover in `index.html` guarantees the page never flashes before the
+overlay mounts. The sequence — every transition carried by an origami crane,
+no hard cuts:
 
 1. a red torii in mist, lanterns and drifting sakura; the camera dollies in
 2. through the gate, dreamlike vignettes of local life pass by

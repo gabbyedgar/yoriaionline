@@ -16,7 +16,7 @@
 import * as THREE from 'three';
 import { GLTFLoader, type GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import { toriiSVG } from '../lib/torii';
-import { markIntroDone, signalIntroDone, signalCraneLand } from '../lib/introGate';
+import { clearIntroBoot, signalIntroDone, signalCraneLand } from '../lib/introGate';
 import { createCraneRig, makeAssembly, setWings, type CraneRig, type Assembly } from './craneModel';
 import { createAudio, type IntroAudio } from './audio';
 import { glowTex, petalTex, vigTex, paperTex, panelTex } from './textures';
@@ -61,7 +61,7 @@ export function runIntro(): void {
   if (!window.WebGLRenderingContext) {
     document.body.classList.remove('intro-lock');
     signalCraneLand();
-    signalIntroDone();
+    signalIntroDone(); // also lifts the boot cover
     return;
   }
 
@@ -121,6 +121,8 @@ export function runIntro(): void {
     <div class="intro-flash" id="inFlash"></div>`;
   document.body.appendChild(ov);
   document.body.classList.add('intro-lock', 'intro-stage');
+  // the overlay now owns the screen — retire the pre-paint cover beneath it
+  clearIntroBoot();
 
   // ---------- scene state ----------
   let renderer: THREE.WebGLRenderer | undefined;
@@ -399,9 +401,13 @@ export function runIntro(): void {
   function computeLanding(): void {
     const el = document.getElementById('cranePerch');
     const r = el?.getBoundingClientRect();
-    const cx = r && r.width > 4 ? r.left + r.width / 2 : innerWidth * 0.72;
-    const cy = r && r.height > 4 ? r.top + r.height * 0.52 : innerHeight * 0.42;
-    const h = r && r.height > 4 ? r.height : innerHeight * 0.45;
+    let cx = r && r.width > 4 ? r.left + r.width / 2 : innerWidth * 0.72;
+    let cy = r && r.height > 4 ? r.top + r.height * 0.52 : innerHeight * 0.42;
+    const h = r && r.height > 4 ? Math.min(r.height, innerHeight * 0.6) : innerHeight * 0.45;
+    // on small screens the perch may sit below the fold — keep the landing
+    // inside the viewport so the crane never flies off-screen
+    cx = Math.min(Math.max(cx, innerWidth * 0.18), innerWidth * 0.85);
+    cy = Math.min(Math.max(cy, innerHeight * 0.2), innerHeight * 0.72);
     const ndc = new THREE.Vector3((cx / innerWidth) * 2 - 1, -(cy / innerHeight) * 2 + 1, 0.5);
     const restCam = camera.clone();
     restCam.position.copy(REST_POS);
@@ -665,7 +671,6 @@ export function runIntro(): void {
   function finishReveal(): void {
     if (doneFlag) return;
     doneFlag = true;
-    markIntroDone();
     if (audio) audio.end();
     constructInstant();
     signalCraneLand();

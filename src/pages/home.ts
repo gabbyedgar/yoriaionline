@@ -1,9 +1,9 @@
 import '../site';
 import { toriiSVG } from '../lib/torii';
-import { introPending, signalIntroDone, signalCraneLand, craneLanded, CRANE_LAND_EVENT } from '../lib/introGate';
+import { introPending, clearIntroBoot, signalIntroDone, signalCraneLand, craneLanded, CRANE_LAND_EVENT } from '../lib/introGate';
 import { ACTIVITIES, activityCard } from '../data/activities';
 
-// ---- cinematic intro (loaded lazily; only on first visit per session) ----
+// ---- cinematic intro (loaded lazily; plays on every visit to the homepage) ----
 const cinematic = introPending();
 if (cinematic) {
   document.body.classList.add('intro-lock');
@@ -13,8 +13,10 @@ if (cinematic) {
       // chunk failed to load — release the page and let reveals run
       document.body.classList.remove('intro-lock');
       signalCraneLand();
-      signalIntroDone();
+      signalIntroDone(); // also lifts the pre-paint cover
     });
+} else {
+  clearIntroBoot(); // no cinematic this load — make sure the page is visible
 }
 
 // ---- the resident crane on the hero perch ----
