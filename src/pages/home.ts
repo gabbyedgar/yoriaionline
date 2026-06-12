@@ -1,18 +1,18 @@
 import '../site';
 import { toriiSVG } from '../lib/torii';
+import { introPending, signalIntroDone } from '../lib/introGate';
 import { ACTIVITIES, activityCard } from '../data/activities';
 
 // ---- cinematic intro (loaded lazily; only on first visit per session) ----
-{
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const seen = sessionStorage.getItem('yoriai_intro_done');
-  const force = location.hash === '#intro';
-  if (!reduced && (!seen || force)) {
-    document.body.classList.add('intro-lock');
-    import('../intro/intro')
-      .then((m) => m.runIntro())
-      .catch(() => document.body.classList.remove('intro-lock'));
-  }
+if (introPending()) {
+  document.body.classList.add('intro-lock');
+  import('../intro/intro')
+    .then((m) => m.runIntro())
+    .catch(() => {
+      // chunk failed to load — release the page and let reveals run
+      document.body.classList.remove('intro-lock');
+      signalIntroDone();
+    });
 }
 
 // ---- hero avatars ----

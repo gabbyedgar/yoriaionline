@@ -3,6 +3,7 @@
    ============================================================ */
 import './styles/yoriai.css';
 import { toriiSVG } from './lib/torii';
+import { introPending, introHandedOver, INTRO_DONE_EVENT } from './lib/introGate';
 
 const NAV: Array<[string, string]> = [
   ['How it works', 'how-it-works.html'],
@@ -126,23 +127,23 @@ function buildFoot(): void {
 }
 
 function reveals(): void {
-  const els = [...document.querySelectorAll<HTMLElement>('.reveal')];
-  if (!els.length) return;
+  // live query so elements rendered after init (feed cards, FAQ items…)
+  // are picked up too
   function check(): void {
     const vh = window.innerHeight || document.documentElement.clientHeight;
-    for (let i = els.length - 1; i >= 0; i--) {
-      const r = els[i].getBoundingClientRect();
-      if (r.top < vh * 0.92 && r.bottom > 0) {
-        els[i].classList.add('in');
-        els.splice(i, 1);
-      }
-    }
+    document.querySelectorAll<HTMLElement>('.reveal:not(.in)').forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > 0) el.classList.add('in');
+    });
   }
   check();
   window.addEventListener('scroll', check, { passive: true });
   window.addEventListener('resize', check);
   // safety net: never leave content hidden
-  setTimeout(() => els.forEach((e) => e.classList.add('in')), 2600);
+  setTimeout(
+    () => document.querySelectorAll('.reveal:not(.in)').forEach((e) => e.classList.add('in')),
+    2600,
+  );
 }
 
 /* Renders the brand mark into any element with data-torii="size[,ink[,terra]]" */
@@ -157,10 +158,19 @@ function init(): void {
   buildNav();
   if (!document.body.hasAttribute('data-nofoot')) buildFoot();
   marks();
-  reveals();
+  // On the homepage's first visit the intro overlay covers the page; hold the
+  // reveal animations until it hands over so the entrance actually plays as
+  // the overlay fades, instead of silently completing underneath it.
+  if (page() === 'index.html' && introPending() && !introHandedOver()) {
+    window.addEventListener(INTRO_DONE_EVENT, () => setTimeout(reveals, 250), { once: true });
+  } else {
+    reveals();
+  }
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-else init();
+// Init after all page modules have rendered their content (module scripts run
+// before DOMContentLoaded), so reveals see the full DOM.
+if (document.readyState === 'complete') init();
+else document.addEventListener('DOMContentLoaded', init);
 
 export { toriiSVG };

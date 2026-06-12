@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { GLTFLoader, type GLTF } from 'three/addons/loaders/GLTFLoader.js';
 import { toriiSVG } from '../lib/torii';
+import { markIntroDone, signalIntroDone } from '../lib/introGate';
 import { createAudio, type IntroAudio } from './audio';
 import { glowTex, petalTex, vigTex } from './textures';
 
@@ -20,8 +21,13 @@ const MODEL_URL = `${import.meta.env.BASE_URL}models/torii.glb`;
 let started = false;
 
 export function runIntro(): void {
-  if (started || !window.WebGLRenderingContext) return;
+  if (started) return;
   started = true;
+  if (!window.WebGLRenderingContext) {
+    document.body.classList.remove('intro-lock');
+    signalIntroDone();
+    return;
+  }
 
   // start fetching the gate immediately — it's ready by the time play begins
   const gatePromise: Promise<GLTF | null> = new GLTFLoader()
@@ -468,7 +474,7 @@ export function runIntro(): void {
     if (doneFlag) return;
     doneFlag = true;
     flashOn = true;
-    sessionStorage.setItem('yoriai_intro_done', '1');
+    markIntroDone();
     if (audio) audio.end();
     document.body.classList.remove('intro-lock');
     document.body.classList.add('intro-settle');
@@ -477,7 +483,7 @@ export function runIntro(): void {
     requestAnimationFrame(() => {
       ov.style.opacity = '0';
     });
-    window.dispatchEvent(new CustomEvent('yoriai:intro-done'));
+    signalIntroDone();
     setTimeout(() => {
       if (raf) cancelAnimationFrame(raf);
       window.removeEventListener('resize', onResize);
@@ -512,6 +518,7 @@ export function runIntro(): void {
     } catch {
       ov.remove();
       document.body.classList.remove('intro-lock');
+      signalIntroDone();
       return;
     }
     if (withSound) {
