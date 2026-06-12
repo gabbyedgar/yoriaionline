@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yoriai — Live Japan like a local, in Osaka</title>
+<meta name="description" content="Yoriai connects travelers with Osaka locals through real, everyday activities — morning walks, market breakfasts, kissaten afternoons. Not tours. Real life.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#FAF7F4">
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero sec" style="padding-top:clamp(48px,7vw,92px);overflow:visible">
+  <div class="wrap-wide hero-grid">
+    <div class="hero-copy">
+      <div class="kicker reveal">Now in private beta · Osaka 大阪</div>
+      <h1 class="display reveal d1" style="margin-top:22px">
+        See Japan the way<br>it's actually <span class="serif-i" style="color:var(--terra)">lived</span>.
+      </h1>
+      <p class="lede reveal d2" style="margin-top:26px;max-width:520px">
+        Locals post the everyday things they're already doing — a market breakfast,
+        a riverside walk, a standing bar after work — and you simply join them.
+        No tour buses. No scripts. Just an open door.
+      </p>
+      <div class="hero-cta reveal d3">
+        <a class="btn btn-terra btn-lg" href="#waitlist">Join the waitlist <span class="arr">→</span></a>
+        <a class="btn btn-ghost btn-lg" href="hosts.html#apply">Become a founding host</a>
+      </div>
+      <div class="hero-meta reveal d4">
+        <div class="av-row" id="heroAvatars"></div>
+        <span class="mono">— 412 travelers &amp; locals already on the list</span>
+      </div>
+    </div>
+
+    <!-- layered collage -->
+    <div class="hero-art reveal d2" id="heroArt" aria-hidden="true">
+      <div class="hero-stage" id="heroStage">
+      <div class="ph t-terra art-a">
+        <span class="ph-lab">kuromon market · 08:00</span>
+      </div>
+      <div class="ph t-matcha art-b">
+        <span class="ph-lab">nakanoshima walk</span>
+      </div>
+      <div class="ph t-dusk art-c">
+        <span class="ph-lab">sento · abeno</span>
+      </div>
+      <div class="float-card" id="heroFloat">
+        <div class="fc-top">
+          <span class="tag live"><span class="dot pulse"></span> Live now</span>
+          <span class="mono" style="font-size:11px">4 spots left</span>
+        </div>
+        <div class="h3" style="font-size:18px;line-height:1.25;margin-top:12px">Standing-bar hop in Tenma</div>
+        <div class="fc-host">
+          <span class="av stone" style="width:26px;height:26px;font-size:12px">S</span>
+          <span class="mono" style="font-size:12px">Sora · tonight 20:00</span>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+<!-- ============ HOW IT WORKS (teaser) ============ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">How Yoriai works</div>
+      <h2 class="h1" style="margin-top:18px;max-width:680px">Three steps between a stranger and a story worth telling.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal d1">
+        <span class="eyebrow-num jp">一</span>
+        <h3 class="h3">Find something real</h3>
+        <p class="muted">Browse a live feed of what Osakans are actually doing this week — sorted by soon &amp; nearby. Every listing is a real plan, not a product.</p>
+        <a class="linkarr" href="browse.html">Browse the feed →</a>
+      </div>
+      <div class="step reveal d2">
+        <span class="eyebrow-num jp">二</span>
+        <h3 class="h3">Ask to join</h3>
+        <p class="muted">Send a request. Your host reads your profile, you read theirs — mutual vetting before anyone meets. One tap to confirm.</p>
+        <a class="linkarr" href="how-it-works.html">See the flow →</a>
+      </div>
+      <div class="step reveal d3">
+        <span class="eyebrow-num jp">三</span>
+        <h3 class="h3">Show up &amp; connect</h3>
+        <p class="muted">Meet in a public place, do the thing, swap stories. Afterwards you both leave a review — and you've got a friend in Japan.</p>
+        <a class="linkarr" href="travelers.html">For travelers →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIVE FEED PREVIEW ============ -->
+<section class="sec bg-2">
+  <div class="wrap-wide">
+    <div class="feed-head reveal">
+      <div>
+        <div class="kicker">Live this week in Osaka</div>
+        <h2 class="h1" style="margin-top:16px">The feed is the heartbeat.</h2>
+      </div>
+      <div class="ticker" id="ticker" aria-live="polite">
+        <span class="dot pulse"></span>
+        <span id="tickerText" class="mono"></span>
+      </div>
+    </div>
+    <div class="feed-grid" id="feedGrid"></div>
+    <div class="center reveal" style="margin-top:40px">
+      <a class="btn btn-primary btn-lg" href="browse.html">Open the full feed <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TWO-SIDED ============ -->
+<section class="sec">
+  <div class="wrap-wide twoside">
+    <a class="side side-trav reveal" href="travelers.html">
+      <div class="kicker no-rule">For travelers</div>
+      <h3 class="h2" style="margin-top:14px">Stop sightseeing.<br>Start belonging.</h3>
+      <p class="muted" style="margin-top:14px;max-width:380px">The Explorer's way in: skip the highlight reel and step into someone's actual Tuesday. Authentic by default.</p>
+      <span class="linkarr" style="margin-top:auto">How travelers use Yoriai →</span>
+    </a>
+    <a class="side side-host reveal d1" href="hosts.html">
+      <div class="kicker no-rule" style="color:#E8C9B9">For locals</div>
+      <h3 class="h2" style="margin-top:14px;color:#F5F0EB">Share the city<br>you already love.</h3>
+      <p style="margin-top:14px;max-width:380px;color:#B7AFA8">Post what you're doing anyway. Meet curious people from everywhere. Founding hosts get a permanent badge and first access.</p>
+      <span class="linkarr" style="margin-top:auto;color:#F5F0EB">Become a host →</span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="sec bg-2">
+  <div class="wrap safety-row">
+    <div class="reveal" style="flex:1">
+      <div class="kicker">Trust, built in from day one</div>
+      <h2 class="h1" style="margin-top:16px;max-width:520px">Strangers, yes. But never unvetted.</h2>
+      <p class="lede" style="margin-top:18px;max-width:520px">Every meeting happens in public, between people with complete profiles and real review histories. Hosts approve who joins. Reports resolve in under a day.</p>
+      <a class="linkarr" style="margin-top:22px" href="safety.html">How we keep Yoriai safe →</a>
+    </div>
+    <div class="safety-cards reveal d1">
+      <div class="scard"><span class="si">✓</span><div><b>Verified profiles</b><span class="muted">Photo, bio &amp; verified email required to join.</span></div></div>
+      <div class="scard"><span class="si">⇄</span><div><b>Mutual approval</b><span class="muted">You and your host each say yes before meeting.</span></div></div>
+      <div class="scard"><span class="si">◎</span><div><b>Public spaces only</b><span class="muted">Listings with private addresses are flagged.</span></div></div>
+      <div class="scard"><span class="si">★</span><div><b>Real reviews</b><span class="muted">Ratings after every activity, on both sides.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MISSION QUOTE ============ -->
+<section class="sec bg-ink">
+  <div class="wrap center mission">
+    <div class="reveal" data-torii="56,#D4785A,#F5F0EB"></div>
+    <p class="jp reveal d1" style="font-size:clamp(28px,4vw,40px);color:#D4785A;margin:22px 0 8px">より合い</p>
+    <h2 class="h1 reveal d2" style="max-width:840px;margin:0 auto;color:#F5F0EB">
+      A torii gate marks the threshold between the ordinary and the meaningful.
+      <span style="color:#8C857E">Yoriai is that threshold — the moment a stranger becomes a connection.</span>
+    </h2>
+    <a class="linkarr reveal d3" style="color:#F5F0EB;margin-top:28px" href="about.html">Read our mission →</a>
+  </div>
+</section>
+
+<!-- ============ WAITLIST ============ -->
+<section class="sec" id="waitlist">
+  <div class="wrap">
+    <div class="waitlist-card reveal">
+      <div class="wl-left">
+        <div class="kicker">Be there at launch</div>
+        <h2 class="h1" style="margin-top:16px">Get your invite to Osaka.</h2>
+        <p class="muted" style="margin-top:14px;max-width:420px">We're opening in batches, supply-first. Join the list and we'll let you in as activities go live in your dates.</p>
+        <ul class="wl-points">
+          <li>First access when your city opens</li>
+          <li>A founding-traveler badge on your profile</li>
+          <li>No spam — one note when it's your turn</li>
+        </ul>
+      </div>
+      <form class="wl-form" id="wlForm" novalidate>
+        <label class="wl-field">
+          <span>I am a…</span>
+          <div class="seg" id="roleSeg">
+            <button type="button" class="seg-btn active" data-role="traveler">Traveler</button>
+            <button type="button" class="seg-btn" data-role="local">Osaka local</button>
+          </div>
+        </label>
+        <label class="wl-field">
+          <span>Email</span>
+          <input type="email" id="wlEmail" placeholder="you@email.com" autocomplete="email" required>
+        </label>
+        <label class="wl-field">
+          <span>Travel dates <em class="muted" style="font-weight:400">(optional)</em></span>
+          <input type="text" id="wlDates" placeholder="e.g. Cherry blossom, late March">
+        </label>
+        <button class="btn btn-terra btn-lg" type="submit" style="width:100%;margin-top:6px">Join the waitlist <span class="arr">→</span></button>
+        <p class="wl-note mono" id="wlNote">412 people ahead of you · Osaka opens Q3 2026</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script type="module" src="/src/pages/home.ts"></script>
+
+<style>
+/* ---- hero ---- */
+.hero-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(32px,5vw,72px); align-items:center; }
+.hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-top:34px; }
+.hero-meta{ display:flex; align-items:center; gap:16px; margin-top:30px; flex-wrap:wrap; }
+.av-row{ display:flex; }
+.hero-art{ position:relative; height:min(520px,46vw); min-height:380px; perspective:1200px; }
+.hero-stage{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+.hero-art .ph{ position:absolute; box-shadow:var(--shadow-lg); }
+@media (prefers-reduced-motion:no-preference) and (pointer:fine){
+  .art-a{ transform:translateZ(28px); }
+  .art-b{ transform:translateZ(64px); }
+  .art-c{ transform:translateZ(8px); }
+}
+.art-a{ width:62%; height:64%; top:0; right:0; z-index:2; }
+.art-b{ width:50%; height:50%; bottom:0; left:0; z-index:3; }
+.art-c{ width:34%; height:40%; top:26%; left:8%; z-index:1; }
+.float-card{ position:absolute; z-index:4; bottom:8%; right:-4%; width:248px; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow-lg); padding:16px;
+  animation:floaty 5s ease-in-out infinite; }
+@keyframes floaty{ 0%,100%{ transform:translateZ(0) translateY(0);} 50%{ transform:translateZ(0) translateY(-10px);} }
+@media (prefers-reduced-motion:no-preference) and (pointer:fine){
+  @keyframes floaty{ 0%,100%{ transform:translateZ(96px) translateY(0);} 50%{ transform:translateZ(96px) translateY(-10px);} }
+}
+.fc-top{ display:flex; justify-content:space-between; align-items:center; }
+.fc-host{ display:flex; align-items:center; gap:8px; margin-top:12px; }
+@media (prefers-reduced-motion:reduce){ .float-card{ animation:none; } }
+
+/* ---- marquee ---- */
+.marquee{ overflow:hidden; border-block:1px solid var(--border); background:var(--surface); padding:16px 0; }
+.marquee-track{ display:flex; align-items:center; gap:26px; white-space:nowrap; width:max-content; animation:scroll 38s linear infinite; }
+.marquee:hover .marquee-track{ animation-play-state:paused; }
+.mq{ font-family:var(--font-serif); font-size:22px; color:var(--ink-soft); }
+.mq-sep{ opacity:.5; line-height:0; }
+@keyframes scroll{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+
+/* ---- section heads ---- */
+.sec-head{ margin-bottom:clamp(36px,5vw,56px); }
+
+/* ---- steps ---- */
+.steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(20px,3vw,40px); }
+.step .eyebrow-num{ font-size:26px; display:block; margin-bottom:14px; }
+.step h3{ margin-bottom:10px; }
+.step p{ margin-bottom:16px; }
+@media (max-width:820px){ .steps{ grid-template-columns:1fr; gap:32px; } }
+
+/* ---- feed ---- */
+.feed-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:36px; flex-wrap:wrap; }
+.ticker{ display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border);
+  padding:10px 16px; border-radius:100px; box-shadow:var(--shadow-sm); max-width:100%; }
+.ticker .mono{ transition:opacity .3s; font-size:12.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:62vw; }
+
+/* ---- two-sided ---- */
+.twoside{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.side{ border-radius:var(--radius-lg); padding:clamp(32px,4vw,52px); min-height:340px; display:flex; flex-direction:column;
+  transition:transform .35s var(--ease), box-shadow .35s; }
+.side-trav{ background:var(--surface); border:1px solid var(--border); }
+.side-host{ background:var(--ink-ground); }
+.side:hover{ transform:translateY(-5px); box-shadow:var(--shadow-lg); }
+@media (max-width:760px){ .twoside{ grid-template-columns:1fr; } }
+
+/* ---- safety ---- */
+.safety-row{ display:flex; gap:clamp(32px,5vw,72px); align-items:center; }
+.safety-cards{ flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px; min-width:0; }
+.scard{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; display:flex; gap:13px; }
+.scard .si{ font-size:18px; color:var(--terra); flex:none; width:30px; height:30px; display:grid; place-items:center;
+  background:var(--terra-tint); border-radius:8px; }
+.scard b{ display:block; font-size:15px; margin-bottom:3px; }
+.scard .muted{ font-size:13.5px; line-height:1.5; }
+@media (max-width:880px){ .safety-row{ flex-direction:column; align-items:flex-start; } .safety-cards{ width:100%; } }
+@media (max-width:480px){ .safety-cards{ grid-template-columns:1fr; } }
+
+/* ---- mission ---- */
+.mission{ max-width:920px; }
+
+/* ---- waitlist ---- */
+.waitlist-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg); display:grid; grid-template-columns:1fr 1fr; overflow:hidden; }
+.wl-left{ padding:clamp(32px,4vw,52px); }
+.wl-points{ list-style:none; padding:0; margin:24px 0 0; display:flex; flex-direction:column; gap:12px; }
+.wl-points li{ position:relative; padding-left:26px; color:var(--ink-soft); font-size:15px; }
+.wl-points li::before{ content:"→"; position:absolute; left:0; color:var(--terra); }
+.wl-form{ padding:clamp(32px,4vw,52px); background:var(--bg-2); border-left:1px solid var(--border); display:flex; flex-direction:column; gap:18px; }
+.wl-field{ display:flex; flex-direction:column; gap:8px; }
+.wl-field > span{ font-size:13px; font-weight:600; letter-spacing:.02em; }
+.wl-field input{ font-family:var(--font-sans); font-size:16px; padding:13px 16px; border:1px solid var(--border-2);
+  border-radius:10px; background:var(--surface); color:var(--ink); transition:border-color .2s; }
+.wl-field input:focus{ outline:none; border-color:var(--terra); box-shadow:0 0 0 3px var(--terra-tint); }
+.seg{ display:flex; gap:6px; background:var(--surface); border:1px solid var(--border-2); border-radius:10px; padding:4px; }
+.seg-btn{ flex:1; padding:10px; border:0; background:transparent; border-radius:7px; font-size:14px; font-weight:600; color:var(--muted); transition:all .2s; }
+.seg-btn.active{ background:var(--ink); color:var(--bg); }
+.wl-note{ text-align:center; font-size:11.5px; margin:2px 0 0; }
+.wl-success{ text-align:center; padding:20px 0; }
+@media (max-width:760px){ .waitlist-card{ grid-template-columns:1fr; } .wl-form{ border-left:0; border-top:1px solid var(--border); } }
+@media (max-width:560px){ .hero-art{ display:none; } }
+</style>
+</body>
+</html>

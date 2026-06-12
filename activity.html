@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity — Yoriai</title>
+<meta name="description" content="An everyday activity hosted by an Osaka local.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#FAF7F4">
+</head>
+<body>
+
+<section style="padding-top:24px">
+  <div class="wrap-wide">
+    <a class="linkarr" href="browse.html" style="font-size:14px"><span style="transform:rotate(180deg);display:inline-block">→</span> Back to feed</a>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:22px;padding-bottom:clamp(48px,7vw,100px)">
+  <div class="wrap-wide">
+
+    <!-- gallery -->
+    <div class="gallery reveal" id="gallery"></div>
+
+    <div class="detail-grid">
+      <!-- main -->
+      <div class="detail-main">
+        <div class="reveal">
+          <div class="d-tags" id="dTags"></div>
+          <h1 class="h1" id="dTitle" style="margin-top:14px"></h1>
+          <div class="d-meta mono" id="dMeta"></div>
+        </div>
+
+        <hr class="divider" style="margin:32px 0">
+
+        <!-- host -->
+        <div class="d-host reveal" id="dHost"></div>
+
+        <hr class="divider" style="margin:32px 0">
+
+        <!-- about -->
+        <div class="reveal">
+          <h3 class="h3" style="margin-bottom:12px">About this activity</h3>
+          <p class="lede" id="dBlurb" style="font-size:18px"></p>
+          <p class="muted" id="dExtra"></p>
+        </div>
+
+        <!-- details list -->
+        <div class="d-facts reveal" id="dFacts"></div>
+
+        <!-- map -->
+        <div class="reveal" style="margin-top:36px">
+          <h3 class="h3" style="margin-bottom:12px">Where</h3>
+          <div class="ph t-stone d-map"><span class="ph-lab" id="dMapLab">map · public meeting point</span>
+            <span class="map-pin"></span></div>
+          <p class="muted" style="font-size:13.5px;margin-top:10px">Exact spot shared once your request is approved. Always a public place.</p>
+        </div>
+
+        <!-- participants -->
+        <div class="reveal" style="margin-top:36px">
+          <h3 class="h3" style="margin-bottom:14px">Who's going</h3>
+          <div class="d-parts" id="dParts"></div>
+        </div>
+
+        <!-- reviews -->
+        <div class="reveal" style="margin-top:40px">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:18px">
+            <h3 class="h3">Reviews</h3>
+            <span class="mono" id="dRevSum"></span>
+          </div>
+          <div class="d-reviews" id="dReviews"></div>
+        </div>
+      </div>
+
+      <!-- sticky booking -->
+      <aside class="detail-side">
+        <div class="book-card reveal d1" id="bookCard">
+          <div class="book-price"><span id="bPrice"></span><span class="mono" id="bDur"></span></div>
+          <div class="book-when mono" id="bWhen"></div>
+          <div class="book-seats" id="bSeats"></div>
+          <button class="btn btn-terra btn-lg" id="joinBtn" style="width:100%;margin-top:6px">Request to join <span class="arr">→</span></button>
+          <p class="mono book-note">Free · You won't be charged · Host approves first</p>
+          <div class="book-safe">
+            <span class="si">◎</span>
+            <span>Public place · verified host · report &amp; block anytime. <a href="safety.html" style="color:var(--terra);font-weight:600">Safety →</a></span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- more -->
+<section class="sec-tight bg-2">
+  <div class="wrap-wide">
+    <div class="kicker reveal" style="margin-bottom:24px">More this week in Osaka</div>
+    <div class="feed-grid" id="more"></div>
+  </div>
+</section>
+
+
+<script type="module" src="/src/pages/activity.ts"></script>
+
+<style>
+.gallery{ display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:1fr 1fr; gap:12px; height:min(440px,46vw); min-height:300px; margin-bottom:clamp(32px,4vw,52px); }
+.gallery .g0{ grid-row:1/3; } .gallery .ph{ height:100%; box-shadow:var(--shadow-sm); }
+@media (max-width:700px){ .gallery{ grid-template-columns:1fr 1fr; grid-template-rows:1.4fr 1fr; height:340px; } .gallery .g0{ grid-column:1/3; grid-row:1; } .gallery .g3{ display:none; } }
+
+.detail-grid{ display:grid; grid-template-columns:1fr 380px; gap:clamp(32px,5vw,64px); align-items:start; }
+@media (max-width:920px){ .detail-grid{ grid-template-columns:1fr; } }
+
+.d-tags{ display:flex; gap:8px; flex-wrap:wrap; }
+.d-meta{ margin-top:14px; font-size:13.5px; }
+.d-host{ display:flex; align-items:center; gap:16px; }
+
+.d-facts{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-top:28px; }
+.fact{ background:var(--surface); padding:16px 18px; display:flex; flex-direction:column; gap:4px; }
+.fact .mono{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+.fact b{ font-size:15px; }
+@media (max-width:480px){ .d-facts{ grid-template-columns:1fr; } }
+
+.d-map{ height:220px; align-items:flex-end; justify-content:flex-start; position:relative; }
+.map-pin{ width:18px; height:18px; border-radius:50% 50% 50% 0; background:var(--terra); transform:rotate(-45deg);
+  box-shadow:0 0 0 6px color-mix(in srgb,var(--terra) 22%,transparent); position:absolute; top:46%; left:50%; }
+
+.d-parts{ display:flex; flex-wrap:wrap; gap:18px; }
+.part{ display:flex; flex-direction:column; align-items:center; gap:7px; font-size:13px; width:58px; text-align:center; }
+.part.open .av-open{ width:40px; height:40px; border-radius:50%; border:1.5px dashed var(--border-2); color:var(--muted); display:grid; place-items:center; font-size:18px; }
+
+.review{ padding:20px 0; border-top:1px solid var(--border); }
+.review:first-child{ border-top:0; padding-top:0; }
+.rev-head{ display:flex; align-items:center; gap:11px; margin-bottom:10px; }
+.rev-head b{ font-size:15px; }
+.review p{ margin:0; color:var(--ink-soft); }
+
+/* booking */
+.detail-side{ position:sticky; top:88px; }
+.book-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:26px; }
+.book-price{ display:flex; align-items:baseline; justify-content:space-between; }
+.book-price span:first-child{ font-family:var(--font-serif); font-size:30px; color:var(--ink); }
+.book-when{ font-size:13px; margin-top:6px; }
+.book-seats{ margin:20px 0; }
+.seatbar{ height:7px; background:var(--bg-2); border-radius:100px; overflow:hidden; }
+.seatbar-fill{ height:100%; background:var(--terra); border-radius:100px; }
+.book-note{ text-align:center; font-size:11px; margin:12px 0 0; }
+.book-safe{ display:flex; gap:10px; align-items:flex-start; margin-top:18px; padding-top:18px; border-top:1px solid var(--border); font-size:13px; color:var(--muted); line-height:1.5; }
+.book-safe .si{ color:var(--terra); font-size:16px; }
+.join-pending{ display:flex; align-items:center; justify-content:center; gap:10px; background:var(--bg-2); border:1px solid var(--border); border-radius:100px; padding:14px; font-weight:600; font-size:14px; color:var(--ink-soft); margin-top:6px; }
+.join-ok{ text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 0 4px; margin-top:6px; }
+.join-ok b{ font-family:var(--font-serif); font-size:20px; margin-top:6px; }
+.join-ok .muted{ font-size:13.5px; line-height:1.5; }
+</style>
+</body>
+</html>

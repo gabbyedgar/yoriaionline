@@ -1,0 +1,22 @@
+{
+  "name": "yoriai-online",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Yoriai — join the everyday life of Japan. Multi-page Vite + TypeScript site with a Three.js cinematic intro.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "model": "python3 blender/torii_gate.py",
+    "icons": "python3 tools/make_favicons.py"
+  },
+  "dependencies": {
+    "three": "^0.182.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.184.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.3.5"
+  }
+}
