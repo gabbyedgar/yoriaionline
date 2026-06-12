@@ -16,14 +16,25 @@
   html.intro-boot::before{ content:""; position:fixed; inset:0; background:#050403; z-index:9998; }
 </style>
 <script>
+  /* Mirrors introPending() in src/lib/introGate.ts — keep in sync.
+     Cinematic on reload / fresh entry; not on in-site links or back/forward. */
   (function () {
     try {
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var play = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (play && location.hash !== '#intro') {
+        var entries = (performance.getEntriesByType && performance.getEntriesByType('navigation')) || [];
+        var type = entries[0] ? entries[0].type : 'navigate';
+        if (type === 'back_forward') play = false;
+        else if (type !== 'reload' && document.referrer) {
+          try { if (new URL(document.referrer).origin === location.origin) play = false; } catch (x) {}
+        }
+      }
+      if (play) {
         document.documentElement.classList.add('intro-boot');
         // last-resort: never leave the page covered if the scripts fail to load
         setTimeout(function () { document.documentElement.classList.remove('intro-boot'); }, 9000);
       }
-    } catch (e) { /* no matchMedia — skip the cinematic, show the page */ }
+    } catch (e) { /* can't decide — skip the cinematic, show the page */ }
   })();
 </script>
 </head>
@@ -209,11 +220,16 @@
 /* ---- hero ---- */
 .hero-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(32px,5vw,72px); align-items:center; }
 @media (max-width:900px){
-  .hero-grid{ grid-template-columns:1fr; gap:36px; }
-  .hero-art{ height:340px; min-height:300px; max-width:480px; margin-inline:auto; width:100%; }
+  .hero-grid{ grid-template-columns:1fr; gap:28px; }
+  /* crane first on mobile: the perch must sit inside the first viewport so
+     the intro's landing lines up with the real perch position */
+  .hero-art{ order:-1; height:300px; min-height:260px; max-width:440px; margin-inline:auto; width:100%; }
 }
 @media (max-width:560px){
-  .hero-art{ height:260px; min-height:220px; }
+  .hero-art{ height:240px; min-height:210px; }
+}
+@media (max-width:480px){
+  .hero-cta .btn{ width:100%; justify-content:center; }
 }
 .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-top:34px; }
 .hero-meta{ display:flex; align-items:center; gap:16px; margin-top:30px; flex-wrap:wrap; }

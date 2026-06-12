@@ -14,9 +14,15 @@
 import { JSDOM } from 'jsdom';
 import { readFileSync, readdirSync } from 'node:fs';
 
-const run = async (cinematicLoad) => {
+const run = async (mode) => {
+  const cinematicLoad = mode === 'cinematic';
   const html = readFileSync('index.html', 'utf8').replace(/<script type="module"[^>]*><\/script>/, '');
-  const dom = new JSDOM(html, { url: 'http://localhost/index.html', pretendToBeVisual: true });
+  const dom = new JSDOM(html, {
+    url: 'http://localhost/index.html',
+    // in-site navigation (same-origin referrer) must NOT replay the cinematic
+    referrer: mode === 'insite' ? 'http://localhost/browse.html' : undefined,
+    pretendToBeVisual: true,
+  });
   const { window } = dom;
   globalThis.window = window;
   globalThis.document = window.document;
@@ -26,7 +32,7 @@ const run = async (cinematicLoad) => {
   globalThis.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 16);
   // the cinematic plays on every load unless reduced motion is requested
   window.matchMedia = globalThis.matchMedia = (q) => ({
-    matches: q.includes('prefers-reduced-motion: reduce') ? !cinematicLoad : false,
+    matches: q.includes('prefers-reduced-motion: reduce') ? mode === 'reduced' : false,
     media: q,
     addEventListener() {},
     removeEventListener() {},
@@ -46,8 +52,9 @@ const run = async (cinematicLoad) => {
     if (hiddenEarly !== total) return false;
     window.dispatchEvent(new window.CustomEvent('yoriai:intro-done')); // intro hands over
   } else {
-    console.log(`reduced motion: cards=${cards} hiddenEarly=${hiddenEarly}/${total}`);
-    // the pre-paint cover must never survive a non-cinematic load
+    console.log(`${mode}: cards=${cards} hiddenEarly=${hiddenEarly}/${total} lock=${document.body.classList.contains('intro-lock')}`);
+    // non-cinematic loads must never lock the page or keep the pre-paint cover
+    if (document.body.classList.contains('intro-lock')) return false;
     if (document.documentElement.classList.contains('intro-boot')) return false;
   }
   await new Promise((r) => setTimeout(r, 3300)); // reveal start + 2.6s safety net
@@ -56,6 +63,6 @@ const run = async (cinematicLoad) => {
   return cards === 6 && hiddenLate === 0 && !!document.querySelector('header.nav');
 };
 
-const ok = await run(process.argv[2] === 'cinematic');
+const ok = await run(process.argv[2] ?? 'cinematic');
 console.log(ok ? 'PASS' : 'FAIL');
 process.exit(ok ? 0 : 1);

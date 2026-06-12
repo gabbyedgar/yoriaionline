@@ -52,15 +52,16 @@ function buildNav(): void {
         </button>
       </div>
     </div>
-    <div class="msheet" id="msheet">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div class="msheet-backdrop" id="msheetBack" aria-hidden="true"></div>
+    <div class="msheet" id="msheet" role="dialog" aria-label="Menu">
+      <div class="msheet-head">
         <a class="brand" href="index.html">${toriiSVG(28)}<span class="word">Yoriai</span></a>
         <button class="nav-toggle" aria-label="Close" data-sheet="close">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
       </div>
-      ${mlinks}
-      <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-top:24px">
+      <nav class="msheet-links">${mlinks}</nav>
+      <div class="msheet-cta">
         <a class="btn btn-ghost btn-lg" href="hosts.html#apply">Become a host</a>
         <a class="btn btn-primary btn-lg" href="index.html#waitlist">Join the waitlist</a>
       </div>
@@ -68,9 +69,18 @@ function buildNav(): void {
   document.body.prepend(el);
 
   const sheet = el.querySelector<HTMLElement>('#msheet')!;
+  const back = el.querySelector<HTMLElement>('#msheetBack')!;
+  const setSheet = (open: boolean): void => {
+    sheet.classList.toggle('open', open);
+    back.classList.toggle('open', open);
+  };
   el.querySelectorAll<HTMLButtonElement>('[data-sheet]').forEach((b) =>
-    b.addEventListener('click', () => sheet.classList.toggle('open', b.dataset.sheet === 'open')),
+    b.addEventListener('click', () => setSheet(b.dataset.sheet === 'open')),
   );
+  back.addEventListener('click', () => setSheet(false));
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setSheet(false);
+  });
   const onScroll = () => el.classList.toggle('scrolled', window.scrollY > 8);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();

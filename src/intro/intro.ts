@@ -161,6 +161,7 @@ export function runIntro(): void {
   const landPos = new THREE.Vector3();
   let landScale = 1.6;
 
+  let latSpread = 1; // lateral compression for portrait framing
   let grid: THREE.LineSegments, gridMat: THREE.LineBasicMaterial;
   const panels: Array<{ mesh: THREE.Mesh; mat: THREE.MeshBasicMaterial; delay: number; y0: number }> = [];
   const iLights: Array<{ s: THREE.Sprite; delay: number }> = [];
@@ -204,6 +205,10 @@ export function runIntro(): void {
     fog = new THREE.FogExp2(DARK.clone(), 0.02);
     scene.fog = fog;
     camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 200);
+    applyFov();
+    // narrow portrait screens see a thin slice of the world — pull the side
+    // dressing (vignettes, panels, light rows) inward so it stays in frame
+    latSpread = Math.min(1, Math.max(0.55, innerWidth / innerHeight / 1.5));
 
     gatePromise.then(adoptGate);
     cranePromise.then(adoptCrane);
@@ -331,7 +336,7 @@ export function runIntro(): void {
     VIG.forEach((v) => {
       const m = new THREE.MeshBasicMaterial({ map: vigTex(v[0], v[1], v[2], v[3]), transparent: true, opacity: 0, fog: false, side: THREE.DoubleSide });
       const p = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 2.26), m);
-      p.position.set(v[4], v[5], v[6]);
+      p.position.set(v[4] * latSpread, v[5], v[6]);
       p.userData = { bob: Math.random() * Math.PI * 2 };
       vigs.push(p);
       scene.add(p);
@@ -355,7 +360,7 @@ export function runIntro(): void {
       const mat = new THREE.MeshBasicMaterial({ map: ptex, transparent: true, opacity: 0, fog: false, side: THREE.DoubleSide, depthWrite: false });
       const mesh = new THREE.Mesh(new THREE.PlaneGeometry(3.3, 2.2), mat);
       const y0 = 3.4 + (i % 3) * 1.3;
-      mesh.position.set(side * (4.2 + (i % 3) * 0.9), y0, -25 - i * 3);
+      mesh.position.set(side * (4.2 + (i % 3) * 0.9) * latSpread, y0, -25 - i * 3);
       mesh.rotation.y = -side * 0.5;
       panels.push({ mesh, mat, delay: 18.4 + i * 0.35, y0 });
       scene.add(mesh);
@@ -369,7 +374,7 @@ export function runIntro(): void {
         new THREE.SpriteMaterial({ map: i % 3 === 0 ? cool : warm, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }),
       );
       const side = i % 2 === 0 ? -1 : 1;
-      s.position.set(side * 2.7, 0.35, -22.5 - Math.floor(i / 2) * 1.8);
+      s.position.set(side * 2.7 * latSpread, 0.35, -22.5 - Math.floor(i / 2) * 1.8);
       const sc = 0.55 + Math.random() * 0.3;
       s.scale.set(sc, sc, 1);
       iLights.push({ s, delay: 18.6 + Math.random() * 2.2 });
@@ -379,7 +384,7 @@ export function runIntro(): void {
       const s = new THREE.Sprite(
         new THREE.SpriteMaterial({ map: i % 2 === 0 ? warm : cool, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }),
       );
-      s.position.set((Math.random() - 0.5) * 14, 2 + Math.random() * 5, -26 - Math.random() * 16);
+      s.position.set((Math.random() - 0.5) * 14 * latSpread, 2 + Math.random() * 5, -26 - Math.random() * 16);
       const sc = 0.4 + Math.random() * 0.4;
       s.scale.set(sc, sc, 1);
       iLights.push({ s, delay: 19 + Math.random() * 2.5 });
@@ -389,10 +394,20 @@ export function runIntro(): void {
     window.addEventListener('resize', onResize);
   }
 
+  /* Portrait phones: a fixed 50° vertical fov leaves a sliver of horizontal
+     view — widen it so the gate and crane stay framed (capped to avoid
+     fisheye). Landing size math reads camera.fov, so it adapts too. */
+  function applyFov(): void {
+    const a = innerWidth / Math.max(1, innerHeight);
+    camera.fov =
+      a < 1 ? Math.min(78, (2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(21)) / a) * 180) / Math.PI) : 50;
+    camera.aspect = a;
+    camera.updateProjectionMatrix();
+  }
+
   function onResize(): void {
     if (!renderer) return;
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
+    applyFov();
     renderer.setSize(innerWidth, innerHeight);
   }
 
@@ -406,8 +421,8 @@ export function runIntro(): void {
     const h = r && r.height > 4 ? Math.min(r.height, innerHeight * 0.6) : innerHeight * 0.45;
     // on small screens the perch may sit below the fold — keep the landing
     // inside the viewport so the crane never flies off-screen
-    cx = Math.min(Math.max(cx, innerWidth * 0.18), innerWidth * 0.85);
-    cy = Math.min(Math.max(cy, innerHeight * 0.2), innerHeight * 0.72);
+    cx = Math.min(Math.max(cx, innerWidth * 0.15), innerWidth * 0.85);
+    cy = Math.min(Math.max(cy, innerHeight * 0.16), innerHeight * 0.72);
     const ndc = new THREE.Vector3((cx / innerWidth) * 2 - 1, -(cy / innerHeight) * 2 + 1, 0.5);
     const restCam = camera.clone();
     restCam.position.copy(REST_POS);
@@ -434,14 +449,15 @@ export function runIntro(): void {
       const d = 14.5 * sm(17.2, T.flightEnd, t);
       const weave = sm(17.2, 18.4, t) * (1 - sm(20.6, T.flightEnd, t));
       pos.set(
-        Math.sin((t - 17.2) * 0.85) * 1.25 * weave,
+        Math.sin((t - 17.2) * 0.85) * 1.25 * weave * latSpread,
         BIRTH.y + Math.sin(t * 2.6) * 0.22 * weave + Math.sin(t * 1.3) * 0.08,
         BIRTH.z - d,
       );
     } else if (t < T.circle[1]) {
       // one slow circle above the forming page (starts/ends where flight ended)
       const th = sm(T.circle[0], T.circle[1], t) * Math.PI * 2;
-      pos.set(Math.sin(th) * 2.4, BIRTH.y + 0.6 + Math.sin(th * 2) * 0.3, -33.1 - Math.cos(th) * 2.4);
+      const rad = 2.4 * Math.max(0.7, latSpread); // keep the loop in frame on portrait
+      pos.set(Math.sin(th) * rad, BIRTH.y + 0.6 + Math.sin(th * 2) * 0.3, -33.1 - Math.cos(th) * 2.4);
     } else if (t < T.land[1]) {
       const e = sm(T.land[0], T.land[1], t);
       computeLanding();

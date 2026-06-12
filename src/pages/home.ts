@@ -3,7 +3,8 @@ import { toriiSVG } from '../lib/torii';
 import { introPending, clearIntroBoot, signalIntroDone, signalCraneLand, craneLanded, CRANE_LAND_EVENT } from '../lib/introGate';
 import { ACTIVITIES, activityCard } from '../data/activities';
 
-// ---- cinematic intro (loaded lazily; plays on every visit to the homepage) ----
+// ---- cinematic intro (loaded lazily; reloads & fresh entries only — in-site
+// navigation and back/forward skip it, see introPending) ----
 const cinematic = introPending();
 if (cinematic) {
   document.body.classList.add('intro-lock');

@@ -2,13 +2,13 @@
   "name": "yoriai-online",
   "private": true,
   "version": "1.0.0",
-  "description": "Yoriai — join the everyday life of Japan. Multi-page Vite + TypeScript site with a Three.js cinematic intro.",
+  "description": "Yoriai \u2014 join the everyday life of Japan. Multi-page Vite + TypeScript site with a Three.js cinematic intro.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node tests/homepage.test.mjs reduced && node tests/homepage.test.mjs cinematic",
+    "test": "node tests/homepage.test.mjs reduced && node tests/homepage.test.mjs insite && node tests/homepage.test.mjs cinematic",
     "model": "python3 blender/torii_gate.py && python3 blender/origami_crane.py",
     "icons": "python3 tools/make_favicons.py"
   },

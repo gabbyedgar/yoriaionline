@@ -2,12 +2,30 @@
    (to hold reveal animations until the intro hands over) and the homepage
    (to decide whether to load the intro chunk at all).
 
-   The cinematic plays on EVERY load of the homepage (by design — a reload
-   takes you back through the gateway). Only prefers-reduced-motion opts out. */
+   The cinematic plays on reloads and fresh entries to the homepage; moving
+   around inside the site (or returning via back/forward) must NOT replay it.
+   prefers-reduced-motion always opts out. `#intro` always forces a replay.
+
+   NOTE: index.html's inline boot script mirrors this logic — keep in sync. */
 
 export function introPending(): boolean {
   try {
-    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    if (location.hash === '#intro') return true;
+    const nav = (performance.getEntriesByType?.('navigation') ?? [])[0] as
+      | PerformanceNavigationTiming
+      | undefined;
+    const type = nav?.type ?? 'navigate';
+    if (type === 'back_forward') return false;
+    if (type !== 'reload' && document.referrer) {
+      try {
+        // arriving from another page of this site — don't replay
+        if (new URL(document.referrer).origin === location.origin) return false;
+      } catch {
+        /* malformed referrer — treat as external */
+      }
+    }
+    return true;
   } catch {
     return false;
   }
