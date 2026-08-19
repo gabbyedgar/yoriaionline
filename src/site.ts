@@ -130,7 +130,7 @@ function buildFoot(): void {
       </div>
       <div class="foot-bottom">
         <span>© 2026 Yoriai · Made in Osaka, Japan</span>
-        <span style="display:flex;gap:22px"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Community guidelines</a></span>
+        <span style="display:flex;gap:22px"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="#">Community guidelines</a></span>
       </div>
     </div>`;
   document.body.appendChild(f);

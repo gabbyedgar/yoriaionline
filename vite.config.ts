@@ -9,7 +9,9 @@ const pages = [
   'faq',
   'hosts',
   'how-it-works',
+  'privacy',
   'safety',
+  'terms',
   'travelers',
 ];
 
